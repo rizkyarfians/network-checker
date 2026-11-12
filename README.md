@@ -7,7 +7,7 @@ Standalone **LAN-primary → modem-backup Internet failover** untuk SPFF (Python
 ## Perilaku
 
 - Men-scan interface **read-only** dari `nmcli`, IPv4 default routes dari `ip`, plus `mmcli` dan `lsusb` jika tersedia.
-- Otomatis mengenali LAN Ethernet onboard sebagai primary dan Wi-Fi / WWAN / GSM / USB-Ethernet sebagai calon backup. Jika hasilnya ambigu, berhenti dan minta nama interface di config, **tidak asal memilih**.
+- Otomatis mengenali LAN Ethernet onboard sebagai primary dan Wi-Fi / WWAN / GSM / USB-Ethernet sebagai calon backup. Jika beberapa calon backup ditemukan, hanya memilih otomatis bila **tepat satu** mempunyai IPv4 default route (misalnya `wlan0` dengan route dan `wlan0ap` hotspot tanpa route). Jika tetap ambigu, berhenti dan minta nama interface di config, **tidak asal memilih**. Pemilihan berbasis route bukan bukti bahwa Wi-Fi tersebut berasal dari modem yang diinginkan.
 - Menguji koneksi HTTPS per interface menggunakan `curl --interface`. Setelah 3× LAN gagal dan backup sehat, mengutamakan backup; kembali ke LAN setelah 6× LAN sehat.
 - Hanya mengubah **active IPv4 route metric** lewat NetworkManager; tidak down/up interface, tidak menyentuh profil tersimpan, tidak mengubah route subnet lokal secara langsung.
 - Jika keduanya gagal: tidak mengarang koneksi sehat, mempertahankan pilihan terakhir. MQTT, PostgreSQL dan dashboard lokal tetap berjalan terpisah.

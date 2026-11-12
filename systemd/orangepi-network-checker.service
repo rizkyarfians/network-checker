@@ -1,0 +1,15 @@
+[Unit]
+Description=SPFF Orange Pi Internet Route Failover
+Wants=NetworkManager.service
+After=NetworkManager.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/network-checker/network_checker.py --config /etc/orangepi-network-checker.json --apply
+Restart=on-failure
+RestartSec=10
+User=root
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

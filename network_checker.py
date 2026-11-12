@@ -78,6 +78,13 @@ def discover(snapshot: dict, config: dict) -> tuple[str, str]:
         primary = options[0]
     if backup is None:
         options = [name for name in backup_candidates if name != primary]
+        # On AP+station Wi-Fi configurations, the AP virtual interface has no
+        # Internet default route. Prefer a single routed candidate, but never
+        # guess if multiple candidates can route Internet traffic.
+        if len(options) > 1:
+            routed = [name for name in options if eligible[name].get("default_routes")]
+            if len(routed) == 1:
+                options = routed
         if len(options) != 1:
             raise ValueError(f"Modem/backup ambigu: kandidat={options}; isi backup_interface di config")
         backup = options[0]

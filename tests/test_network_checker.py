@@ -42,6 +42,24 @@ class FailoverTests(unittest.TestCase):
             nc.discover(snap, {})
         self.assertEqual(nc.discover(snap, {"backup_interface": "wwan0"}), ("end0", "wwan0"))
 
+    def test_wifi_station_preferred_over_access_point_without_default_route(self):
+        access_point = device("wlan0ap", "wifi")
+        access_point["default_routes"] = []
+        lan = device("eth0", "ethernet")
+        lan["state"] = "unavailable"
+        lan["default_routes"] = []
+        snap = {"devices": [access_point, device("wlan0", "wifi"), lan]}
+        self.assertEqual(nc.discover(snap, {}), ("eth0", "wlan0"))
+
+    def test_two_wifi_devices_without_default_routes_remain_ambiguous(self):
+        access_point = device("wlan0ap", "wifi")
+        access_point["default_routes"] = []
+        station = device("wlan0", "wifi")
+        station["default_routes"] = []
+        snap = {"devices": [device("eth0", "ethernet"), access_point, station]}
+        with self.assertRaisesRegex(ValueError, "ambigu"):
+            nc.discover(snap, {})
+
     def test_no_gateway_detected_but_not_usable(self):
         other = device("wlan0", "wifi")
         other["default_routes"] = []

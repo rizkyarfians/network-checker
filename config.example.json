@@ -1,0 +1,14 @@
+{
+  "primary_interface": null,
+  "backup_interface": null,
+  "probe_urls": [
+    "https://www.google.com/generate_204",
+    "https://connectivitycheck.gstatic.com/generate_204"
+  ],
+  "interval_seconds": 10,
+  "timeout_seconds": 4,
+  "fail_threshold": 3,
+  "recover_threshold": 6,
+  "preferred_metric": 50,
+  "standby_metric": 600
+}
